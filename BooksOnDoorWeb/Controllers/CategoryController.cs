@@ -14,7 +14,7 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult Index()
 		{
 			List<Category> objListCategory = _db.Categories.ToList(); 
-			return View();
+			return View(objListCategory);
 		}
 	}
 }
