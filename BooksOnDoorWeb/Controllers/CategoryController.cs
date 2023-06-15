@@ -16,5 +16,24 @@ namespace BooksOnDoorWeb.Controllers
 			List<Category> objListCategory = _db.Categories.ToList(); 
 			return View(objListCategory);
 		}
+		public IActionResult Create()
+		{
+			return View();
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Create(Category obj)
+		{
+			if (ModelState.IsValid)
+			{
+				//This statement will add the item on index
+				_db.Categories.Add(obj);
+				//This statement will add the item to the database.
+				_db.SaveChanges();
+				return RedirectToAction("Index");
+
+			}
+			return View();
+		}
 	}
 }
