@@ -12,7 +12,7 @@ namespace BooksOnDoorWeb.Models
 		[DisplayName("Category Name")]
 		public string Name { get; set; }
 		[DisplayName("Display Order")]
-		[Range(0,50)]
+		[Range(0,50,ErrorMessage ="Range Must be Between 0-50")]
 		public int DisplayOrder { get; set; }
     }
 }
