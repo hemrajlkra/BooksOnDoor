@@ -13,10 +13,10 @@ namespace BooksOnDoor.DataAccess.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;
-        private readonly DbSet<T> dbSet;
+        internal DbSet<T> dbSet;
         public Repository(ApplicationDbContext db)
         {
-            db = _db;
+            _db = db;
             this.dbSet = _db.Set<T>();
         }
         public void Add(T item)
