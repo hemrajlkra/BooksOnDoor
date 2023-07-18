@@ -69,7 +69,6 @@ namespace BooksOnDoorWeb.Controllers
         [HttpGet]
         public IActionResult Delete(int? Id)
         {
-
             Category? categoryFromDb = _db.Categories.Find(Id);
             if (Id == null || Id == 0 || categoryFromDb == null)
                 return NotFound();
