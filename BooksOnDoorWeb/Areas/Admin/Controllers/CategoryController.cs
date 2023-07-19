@@ -3,8 +3,9 @@ using BooksOnDoorWeb.Data;
 using BooksOnDoorWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BooksOnDoorWeb.Controllers
+namespace BooksOnDoorWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         //private readonly ApplicationDbContext _db;
@@ -50,7 +51,7 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult Edit(int? Id)
         {
             //Category? categoryFromDb = _db.Categories.Find(Id);
-            Category? categoryFromDb = _unitOfWork.Category.Get(u=>u.Id == Id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == Id);
 
             //these are the two ways by which we can retrieve id.
             //Category? cateforyFromDb1 = _db.Categories.FirstOrDefault(id => id.Id ==Id);
@@ -79,7 +80,7 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult Delete(int? Id)
         {
             //Category? categoryFromDb = _db.Categories.Find(Id);
-            Category? categoryFromDb = _unitOfWork.Category.Get(i=>i.Id == Id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(i => i.Id == Id);
             if (Id == null || Id == 0 || categoryFromDb == null)
                 return NotFound();
             return View(categoryFromDb);
@@ -90,7 +91,7 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult DeleteItem(int? id)
         {
             //Category? categoryFromDb = _db.Categories.Find(id);
-            Category categoryFromDb = _unitOfWork.Category.Get(i=>i.Id==id);
+            Category categoryFromDb = _unitOfWork.Category.Get(i => i.Id == id);
             //_db.Categories.Remove(categoryFromDb);
             _unitOfWork.Category.Remove(categoryFromDb);
             //_db.SaveChanges();
