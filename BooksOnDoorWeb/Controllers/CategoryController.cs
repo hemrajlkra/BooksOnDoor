@@ -8,15 +8,16 @@ namespace BooksOnDoorWeb.Controllers
     public class CategoryController : Controller
     {
         //private readonly ApplicationDbContext _db;
-        private readonly ICategoryRepository _categoryRepository;
-        public CategoryController(ICategoryRepository categoryRepository)
+        //private readonly ICategoryRepository _categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
             //List<Category> objListCategory = _db.Categories.ToList();
-            List<Category> objListCategory = _categoryRepository.Getall().ToList();
+            List<Category> objListCategory = _unitOfWork.Category.Getall().ToList();
             return View(objListCategory);
         }
         public IActionResult Create()
@@ -36,10 +37,10 @@ namespace BooksOnDoorWeb.Controllers
             {
                 //This statement will add the item on index
                 //_db.Categories.Add(obj);
-                _categoryRepository.Add(obj);
+                _unitOfWork.Category.Add(obj);
                 //This statement will add the item to the database.
                 //_db.SaveChanges();
-                _categoryRepository.save();
+                _unitOfWork.save();
                 TempData["Success"] = "Category created Successfully";
                 return RedirectToAction("Index");
 
@@ -49,7 +50,7 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult Edit(int? Id)
         {
             //Category? categoryFromDb = _db.Categories.Find(Id);
-            Category? categoryFromDb = _categoryRepository.Get(u=>u.Id == Id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(u=>u.Id == Id);
 
             //these are the two ways by which we can retrieve id.
             //Category? cateforyFromDb1 = _db.Categories.FirstOrDefault(id => id.Id ==Id);
@@ -66,9 +67,9 @@ namespace BooksOnDoorWeb.Controllers
             if (ModelState.IsValid)
             {
                 //_db.Categories.Update(category);
-                _categoryRepository.update(category);
+                _unitOfWork.Category.update(category);
                 //_db.SaveChanges();
-                _categoryRepository.save();
+                _unitOfWork.save();
                 TempData["Success"] = "Category updated successfully";
                 return RedirectToAction("Index");
             }
@@ -78,7 +79,7 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult Delete(int? Id)
         {
             //Category? categoryFromDb = _db.Categories.Find(Id);
-            Category? categoryFromDb = _categoryRepository.Get(i=>i.Id == Id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(i=>i.Id == Id);
             if (Id == null || Id == 0 || categoryFromDb == null)
                 return NotFound();
             return View(categoryFromDb);
@@ -89,11 +90,11 @@ namespace BooksOnDoorWeb.Controllers
         public IActionResult DeleteItem(int? id)
         {
             //Category? categoryFromDb = _db.Categories.Find(id);
-            Category categoryFromDb = _categoryRepository.Get(i=>i.Id==id);
+            Category categoryFromDb = _unitOfWork.Category.Get(i=>i.Id==id);
             //_db.Categories.Remove(categoryFromDb);
-            _categoryRepository.Remove(categoryFromDb);
+            _unitOfWork.Category.Remove(categoryFromDb);
             //_db.SaveChanges();
-            _categoryRepository.save();
+            _unitOfWork.save();
             TempData["Success"] = "Category deleted Successfully";
             return RedirectToAction("Index");
 
