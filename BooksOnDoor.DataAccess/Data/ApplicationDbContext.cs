@@ -1,4 +1,5 @@
-﻿using BooksOnDoorWeb.Models;
+﻿using BooksOnDoor.Models.Models;
+using BooksOnDoorWeb.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BooksOnDoorWeb.Data
@@ -9,10 +10,11 @@ namespace BooksOnDoorWeb.Data
 		{
 		}
 		public DbSet<Category> Categories { get; set; }
+		public DbSet<Product> Products { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Category>().HasData(
-				new Category { Id = 1, Name = "Sci-fi", DisplayOrder = 1},
+				new Category { Id = 1, Name = "Sci-fi", DisplayOrder = 1, },
 				new Category { Id = 2, Name = "Bollywood", DisplayOrder = 2 }
 				);
 		}

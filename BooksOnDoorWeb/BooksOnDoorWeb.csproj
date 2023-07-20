@@ -21,8 +21,4 @@
     <ProjectReference Include="..\BooksOnDoor.Models\BooksOnDoor.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
