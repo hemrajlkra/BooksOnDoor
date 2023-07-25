@@ -1,6 +1,10 @@
 ﻿using BooksOnDoor.DataAccess.Repository.IRepository;
 using BooksOnDoor.Models.Models;
+using BooksOnDoor.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Collections.Generic;
 
 namespace BooksOnDoorWeb.Areas.Admin.Controllers
 {
@@ -15,46 +19,48 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Product> products = _unitOfWork.Product.Getall().ToList();
+            
             return View(products);
         }
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
-            return View();
+            //ViewBag.CategoryList = CategoryList;
+            
+            ProductVM productVM = new()
+            {
+                CategoryList = _unitOfWork.Category.Getall().
+                Select(u => new SelectListItem { Text = u.Name, Value = u.Id.ToString() }),
+                Product = new Product()
+            };
+            if (id == null || id == 0) 
+            { 
+                //create
+                return View(productVM);
+            }
+            else
+            {
+                //update
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
+                return View(productVM);
+            }
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Product obj)
+        public IActionResult Upsert(ProductVM productVM,IFormFile file)
         {
             if(ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(obj);
+                _unitOfWork.Product.Add(productVM.Product);
                 _unitOfWork.save();
                 TempData["success"] = "Product Created Successfully";
-                return RedirectToAction("Index","Product");
+                return RedirectToAction("Index");
             }
-            return View();
-        }
-        public IActionResult Edit(int? Id)
-        {
-            Product productFromDb = _unitOfWork.Product.Get(u=>u.Id == Id);
-            if(productFromDb == null|| Id==0||Id==null)
+            else
             {
-                return NotFound();
+                productVM.CategoryList = _unitOfWork.Category.Getall().
+                Select(u => new SelectListItem { Text = u.Name, Value = u.Id.ToString() });
+                return View(productVM);
             }
-            return View(productFromDb);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product obj)
-        {
-            if(ModelState.IsValid)
-            {
-                _unitOfWork.Product.update(obj);
-                _unitOfWork.save();
-                TempData["success"] = "Product updated!!";
-                return RedirectToAction("Index", "Product");
-            }
-            return View(obj);
         }
         public IActionResult Delete(int? Id)
         {
