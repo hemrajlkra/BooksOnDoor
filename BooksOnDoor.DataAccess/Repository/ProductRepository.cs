@@ -18,7 +18,27 @@ namespace BooksOnDoor.DataAccess.Repository
         }
         public void update(Product product)
         {
-            _db.Update(product);
+            var prodFromDb = _db.Products.FirstOrDefault(u => u.Id == product.Id);
+            //_db.Update(product);
+            if (prodFromDb != null)
+            {
+                prodFromDb.ISBN = product.ISBN;
+                prodFromDb.Author = product.Author;
+                prodFromDb.Description = product.Description;
+                prodFromDb.Price50 = product.Price50;
+                prodFromDb.CategoryId = product.CategoryId;
+                prodFromDb.ListPrice = product.ListPrice;
+                prodFromDb.Price = product.Price;
+                prodFromDb.Title = product.Title;
+                prodFromDb.Price100 = product.Price100;
+                if(prodFromDb.ImageUrl != null)
+                {
+                    prodFromDb.ImageUrl = product.ImageUrl;
+                }
+
+
+
+            }
         }
     }
 }
