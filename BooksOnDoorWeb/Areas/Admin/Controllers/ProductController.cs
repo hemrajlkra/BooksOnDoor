@@ -20,7 +20,7 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork.Product.Getall().ToList();
+            List<Product> products = _unitOfWork.Product.Getall(includeProperties:"Category").ToList();
             
             return View(products);
         }
