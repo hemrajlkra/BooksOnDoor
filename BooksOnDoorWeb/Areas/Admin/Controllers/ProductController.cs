@@ -114,5 +114,13 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
             }
             return View();
         }
+        #region Api Calls
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> prod = _unitOfWork.Product.Getall(includeProperties: "Category").ToList();
+            return Json(new { data =prod });
+        }
+        #endregion 
     }
 }
