@@ -90,36 +90,27 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
                 return View(productVM);
             }
         }
-        public IActionResult Delete(int? Id)
-        {
-            Product productFromDb = _unitOfWork.Product.Get(u=>u.Id==Id);
-            if (Id == 0 || Id == null || productFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(productFromDb);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ActionName("Delete")]
-        public IActionResult DeleteItem(int? Id) 
-        {
-            if (ModelState.IsValid)
-            {
-                Product productFromDb = _unitOfWork.Product.Get(u => u.Id == Id);
-                _unitOfWork.Product.Remove(productFromDb);
-                _unitOfWork.save();
-                TempData["success"] = "Product Deleted!!";
-                return RedirectToAction("Index");
-            }
-            return View();
-        }
         #region Api Calls
         [HttpGet]
         public IActionResult GetAll()
         {
             List<Product> prod = _unitOfWork.Product.Getall(includeProperties: "Category").ToList();
             return Json(new { data =prod });
+        }
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var productToBeDeleted = _unitOfWork.Product.Get(u=>u.Id == id);
+            if(productToBeDeleted == null)
+                return Json(new {success = false, Message="Error while deleting Id not found!!"});
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+            _unitOfWork.Product.Remove(productToBeDeleted);
+            _unitOfWork.save();
+            return Json(new { success = true, Message = "Deleted Successfully!!" });
         }
         #endregion 
     }
