@@ -24,7 +24,11 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             IEnumerable<Product> prodList = _unitOfWork.Product.Getall(includeProperties:"Category");
             return View(prodList);
         }
-        
+        public IActionResult Details(int productId)
+        {
+            Product prodlist = _unitOfWork.Product.Get(u=>u.Id==productId,includeProperties:"Category");
+            return View(prodlist);
+        }
 
         public IActionResult Privacy()
         {
