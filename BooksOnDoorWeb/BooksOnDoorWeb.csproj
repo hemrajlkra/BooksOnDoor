@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BooksOnDoor.DataAccess\BooksOnDoor.DataAccess.csproj" />
     <ProjectReference Include="..\BooksOnDoor.Models\BooksOnDoor.Models.csproj" />
+    <ProjectReference Include="..\BooksOnDoor.Utility\BooksOnDoor.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
