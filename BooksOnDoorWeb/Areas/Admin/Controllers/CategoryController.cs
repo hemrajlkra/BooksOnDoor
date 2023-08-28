@@ -1,11 +1,15 @@
 ﻿using BooksOnDoor.DataAccess.Repository.IRepository;
+using BooksOnDoor.Utility;
 using BooksOnDoorWeb.Data;
 using BooksOnDoorWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace BooksOnDoorWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
         //private readonly ApplicationDbContext _db;

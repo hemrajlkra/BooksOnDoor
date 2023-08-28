@@ -1,6 +1,8 @@
 ﻿using BooksOnDoor.DataAccess.Repository.IRepository;
 using BooksOnDoor.Models.Models;
 using BooksOnDoor.Models.ViewModel;
+using BooksOnDoor.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
@@ -10,6 +12,7 @@ using System.Collections.Generic;
 namespace BooksOnDoorWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
