@@ -2,8 +2,10 @@
 using BooksOnDoor.DataAccess.Repository.IRepository;
 using BooksOnDoor.Models.Models;
 using BooksOnDoorWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BooksOnDoorWeb.Areas.Customer.Controllers
 {
@@ -26,8 +28,34 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
         }
         public IActionResult Details(int productId)
         {
-            Product prodlist = _unitOfWork.Product.Get(u=>u.Id==productId,includeProperties:"Category");
-            return View(prodlist);
+            ShoppingCart cart = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = productId
+            };
+            return View(cart);
+        }
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart cart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var user = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            cart.ApplicationUserId = user;
+            ShoppingCart cartFromDb= _unitOfWork.ShoppingCart.Get(u=>u.ApplicationUserId==user && u.ProductId==cart.ProductId);
+            if (cartFromDb != null)
+            {
+                cartFromDb.Count = cart.Count;
+                //_unitOfWork.ShoppingCart.update(cartFromDb);
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.Add(cart);
+                
+            }
+            _unitOfWork.save();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
