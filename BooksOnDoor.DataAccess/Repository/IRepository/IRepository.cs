@@ -10,7 +10,7 @@ namespace BooksOnDoor.DataAccess.Repository.IRepository
     public interface IRepository<T> where T : class
     {
         //T- Category
-        IEnumerable<T> Getall(string? includeProperties=null);
+        IEnumerable<T> Getall(Expression<Func<T, bool>>? filter=null, string? includeProperties=null);
         T Get(Expression<Func<T, bool>> filter,string? includeProperties=null,bool tracked=false);
         void Add(T item);
         void Remove(T item);

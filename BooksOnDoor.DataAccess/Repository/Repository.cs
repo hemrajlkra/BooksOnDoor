@@ -47,9 +47,14 @@ namespace BooksOnDoor.DataAccess.Repository
             }
             return query.FirstOrDefault();
         }
-        public IEnumerable<T> Getall(string? includeProperties = null)
+        public IEnumerable<T> Getall(Expression<Func<T, bool>>? filter=null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            if (filter!=null)
+            {
+                query = query.Where(filter);
+            }
+            
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach(var includeprop in  includeProperties.Split(new char[] {','}
