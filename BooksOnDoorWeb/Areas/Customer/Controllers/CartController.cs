@@ -25,12 +25,14 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             shoppingCartVM = new()
             {
                 ShoppingCartList = _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == userId,
-                includeProperties: "Product")
+                includeProperties: "Product"),
+                OrderHeader = new()
             };
+            
             foreach(var cart in shoppingCartVM.ShoppingCartList)
             {
                 cart.Price = GetPriceBasedOnQuantity(cart);
-                shoppingCartVM.OrderTotal += cart.Price * cart.Count;
+                shoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
             }
             return View(shoppingCartVM);
         }
@@ -84,7 +86,29 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
         }
         public IActionResult Summary()
         {
-            return View();
+            var claimIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCartVM = new()
+            {
+                ShoppingCartList = _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == userId,
+                includeProperties: "Product"),
+                OrderHeader = new()
+            };
+            shoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.Application.Get(u=>u.Id== userId);
+
+            shoppingCartVM.OrderHeader.Name=shoppingCartVM.OrderHeader.ApplicationUser.Name;
+            shoppingCartVM.OrderHeader.State = shoppingCartVM.OrderHeader.ApplicationUser.State;
+            shoppingCartVM.OrderHeader.PhoneNumber = shoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
+            shoppingCartVM.OrderHeader.City = shoppingCartVM.OrderHeader.ApplicationUser.City;
+            shoppingCartVM.OrderHeader.StreetAddress = shoppingCartVM.OrderHeader.ApplicationUser.StreetAddress;
+            shoppingCartVM.OrderHeader.PostalCode = shoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+            foreach (var cart in shoppingCartVM.ShoppingCartList)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart);
+                shoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
+            }
+            return View(shoppingCartVM);
+            
         }
     }
 }
