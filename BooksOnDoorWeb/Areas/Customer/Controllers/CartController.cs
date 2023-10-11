@@ -133,11 +133,13 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
 			}
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
+                //it is regular customer
                 shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
                 shoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
             }
             else
             {
+                //it is company user net payment for 30 days
 				shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
 				shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
 			}
