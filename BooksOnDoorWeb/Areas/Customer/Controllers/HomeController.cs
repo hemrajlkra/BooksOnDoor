@@ -1,8 +1,10 @@
 ﻿using BooksOnDoor.DataAccess.Repository;
 using BooksOnDoor.DataAccess.Repository.IRepository;
 using BooksOnDoor.Models.Models;
+using BooksOnDoor.Utility;
 using BooksOnDoorWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -24,6 +26,13 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
         public IActionResult Index()
         {
             IEnumerable<Product> prodList = _unitOfWork.Product.Getall(includeProperties:"Category");
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if(claim != null)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart, 
+                    _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == claim.Value ).Count());
+            }
             return View(prodList);
         }
         public IActionResult Details(int productId)
@@ -47,14 +56,16 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             if (cartFromDb != null)
             {
                 cartFromDb.Count = cart.Count;
-                //_unitOfWork.ShoppingCart.update(cartFromDb);
+                _unitOfWork.ShoppingCart.update(cartFromDb);
+                _unitOfWork.save();
             }
             else
             {
                 _unitOfWork.ShoppingCart.Add(cart);
-                
+                _unitOfWork.save();
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == user).Count());
             }
-            _unitOfWork.save();
+            TempData["Success"] = "Item added successfully";
             return RedirectToAction(nameof(Index));
         }
 

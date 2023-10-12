@@ -63,27 +63,35 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             var cartFromDb = _unitOfWork.ShoppingCart.Get(u=>u.Id == cartId);
             cartFromDb.Count++;
             _unitOfWork.ShoppingCart.update(cartFromDb);
+            //HttpContext.Session.SetInt32(SD.SessionCart,
+            //        _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() +1);
             _unitOfWork.save();
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u=>u.Id==cartId);
-            if(cartFromDb.Count<1 || cartFromDb.Count==0)
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u=>u.Id==cartId,tracked:true);
+            if(cartFromDb.Count<=1 )
             {
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count()-1);
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
             }
             else
             {
                 cartFromDb.Count--;
                 _unitOfWork.ShoppingCart.update(cartFromDb);
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count());
             }
             _unitOfWork.save();
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId,tracked:true);
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.save();
             return RedirectToAction(nameof(Index));
