@@ -26,13 +26,7 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
         public IActionResult Index()
         {
             IEnumerable<Product> prodList = _unitOfWork.Product.Getall(includeProperties:"Category");
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            if(claim != null)
-            {
-                HttpContext.Session.SetInt32(SD.SessionCart, 
-                    _unitOfWork.ShoppingCart.Getall(u => u.ApplicationUserId == claim.Value ).Count());
-            }
+            
             return View(prodList);
         }
         public IActionResult Details(int productId)
