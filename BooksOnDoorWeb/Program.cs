@@ -17,6 +17,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 // used for email cnfmtion ->options => options.SignIn.RequireConfirmedAccount = true
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = "164422440069935";
+    options.AppSecret = "6483e0a4ad79cbecc397c92bccb63d10";
+});
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 builder.Services.ConfigureApplicationCookie(options =>
 {

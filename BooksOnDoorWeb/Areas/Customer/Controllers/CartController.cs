@@ -216,7 +216,9 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
                     _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                     _unitOfWork.save();
                 }
+                HttpContext.Session.Clear();
             }
+            
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.Getall(
                 u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
             _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
