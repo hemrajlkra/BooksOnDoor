@@ -118,7 +118,7 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         {
             OrderVM.orderHeader= _unitOfWork.OrderHeader.Get(u=>u.Id == OrderVM.orderHeader.Id,includeProperties: "ApplicationUser");
             OrderVM.orderDetails = _unitOfWork.OrderDetails.Getall(u => u.OrderHeaderId == OrderVM.orderHeader.Id, includeProperties: "Product");
-            var domain = "https://localhost:44309/";
+            var domain = Request.Scheme+ "://"+Request.Host.Value+"/";
             var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderHeaderId={OrderVM.orderHeader.Id}",
