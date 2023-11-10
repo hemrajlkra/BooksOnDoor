@@ -18,12 +18,14 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class UserController : Controller
     {
-        private readonly ApplicationDbContext _db;
         private readonly UserManager<IdentityUser> _userManager;
-        public UserController(ApplicationDbContext db,UserManager<IdentityUser> userManager)
-        {
-            _db = db;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
+        public UserController(UserManager<IdentityUser> userManager,IUnitOfWork unitofWork,RoleManager<IdentityRole> roleManager)
+        {   
             _userManager = userManager;
+            _roleManager = roleManager;
+            _unitOfWork = unitofWork;
         }
         public IActionResult Index()
         {
@@ -31,32 +33,34 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         }
         public IActionResult RoleManagement(string userId)
         {
-            string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == userId).RoleId;
             RoleManagementVM roleManagementVM = new RoleManagementVM()
             {
-                ApplicationUser = _db.ApplicationUsers.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
-                RoleList = _db.Roles.Select(u => new SelectListItem
+                ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId, includeProperties: "Company"),
+                RoleList = _roleManager.Roles.Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Name
                 }),
-                CompanyList = _db.Companies.Select(u => new SelectListItem
+                CompanyList = _unitOfWork.Company.Getall().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 })
             };
-            roleManagementVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+            roleManagementVM.ApplicationUser.Role =_userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u=>u.Id==userId))
+                .GetAwaiter().GetResult().FirstOrDefault();
             return View(roleManagementVM);
         }
         [HttpPost]
         public IActionResult RoleManagement(RoleManagementVM roleManagementVM)
         {
-            string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
-            string oldRole = _db.Roles.FirstOrDefault(x => x.Id == roleId).Name;
+            string oldRole = _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u => u.Id == roleManagementVM.ApplicationUser.Id))
+                .GetAwaiter().GetResult().FirstOrDefault();
+
+            ApplicationUser appUser = _unitOfWork.ApplicationUser.Get(x => x.Id == roleManagementVM.ApplicationUser.Id);
             if (!(roleManagementVM.ApplicationUser.Role == oldRole))
             {
-                ApplicationUser appUser = _db.ApplicationUsers.FirstOrDefault(x => x.Id == roleManagementVM.ApplicationUser.Id);
+                
                 if (roleManagementVM.ApplicationUser.Role == SD.Role_Company)
                 {
                     appUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
@@ -65,7 +69,8 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
                 {
                     appUser.CompanyId = null;
                 }
-                _db.SaveChanges();
+                _unitOfWork.ApplicationUser.Update(appUser);
+                _unitOfWork.save();
                 _userManager.RemoveFromRoleAsync(appUser, oldRole).GetAwaiter().GetResult();
                 _userManager.AddToRoleAsync(appUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
             }
@@ -77,13 +82,11 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<ApplicationUser> applicationUsers = _db.ApplicationUsers.Include(u => u.Company).ToList();
-            var userRole = _db.UserRoles.ToList();
-            var user = _db.Roles.ToList();
+            List<ApplicationUser> applicationUsers = _unitOfWork.ApplicationUser.Getall(includeProperties:"Company").ToList();
+            
             foreach (var users in applicationUsers)
             {
-                var roleId = userRole.FirstOrDefault(u => u.UserId == users.Id).RoleId;
-                users.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+                users.Role = _userManager.GetRolesAsync(users).GetAwaiter().GetResult().FirstOrDefault();
 
                 if (users.Company == null)
                 {
@@ -98,7 +101,7 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult LockUnlock([FromBody] string id)
         {
-            var appUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+            var appUser = _unitOfWork.ApplicationUser.Get(u => u.Id == id);
             if (appUser == null)
                 return Json(new { success = false, Message = "Error while Locking/Unlocking!!" });
             if (appUser.LockoutEnd != null && appUser.LockoutEnd > DateTime.Now)
@@ -111,7 +114,8 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
                 appUser.LockoutEnd = DateTime.Now.AddYears(1000);
                 TempData["Success"] = "Locked Successfully";
             }
-            _db.SaveChanges();
+            _unitOfWork.ApplicationUser.Update(appUser);
+            _unitOfWork.save();
             return Json(new { success = true, Message = "Successful!!" });
         }
         #endregion 

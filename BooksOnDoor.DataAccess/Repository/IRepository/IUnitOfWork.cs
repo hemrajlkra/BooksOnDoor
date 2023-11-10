@@ -16,6 +16,7 @@ namespace BooksOnDoor.DataAccess.Repository.IRepository
         IOrderDetailsRepository OrderDetails { get; }
         IOrderHeaderRepository OrderHeader { get; }
         IProductImageRepository ProductImage { get; }
+        IApplicationUserRepository ApplicationUser { get; }
         void save();
     }
 }

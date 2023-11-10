@@ -19,6 +19,7 @@ namespace BooksOnDoor.DataAccess.Repository
         public IOrderHeaderRepository OrderHeader { get; private set; }
         public IOrderDetailsRepository OrderDetails { get; private set; }
         public IProductImageRepository ProductImage { get; private set; }
+        public IApplicationUserRepository ApplicationUser { get; private set; }
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -30,6 +31,7 @@ namespace BooksOnDoor.DataAccess.Repository
             OrderDetails = new OrderDetailsRepository(_db);
             OrderHeader = new OrderHeaderRepository(_db);
             ProductImage = new ProductImageRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
         }
 
         public void save()
