@@ -10,7 +10,7 @@
     <div class="card-body p-4">
         <form method="post" enctype="multipart/form-data" class="row">
             <input asp-for="Product.Id" hidden />
-            <input asp-for="Product.ImageUrl" hidden/>
+            @*<input asp-for="Product.ImageUrl" hidden/>*@
             <div class="row">
                 <div class="col-10">
                     <div class="border p-3">
@@ -55,8 +55,8 @@
                             <span asp-validation-for="Product.Price100" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12">
-                            <input type="file" name="file" asp-for="Product.ImageUrl" class="form-control border-0 shadow" />
-                            <label asp-for="Product.ImageUrl" class="ms-2"></label>
+                            <input type="file" name="files" asp-for="Product.ProductImages" multiple class="form-control border-0 shadow" />
+                            <label asp-for="Product.ProductImages" class="ms-2"></label>
                         </div>
                         <div class="form-floating py-2 col-12">
                             <select asp-for="@Model.Product.CategoryId" asp-items="@Model.CategoryList" class="form-control border-0 shadow">
@@ -82,8 +82,17 @@
                     </div>
                 </div>
                 <div class="col-2">
-                    <img src="@Model.Product.ImageUrl" width="100%"
-                         style="border-radius:5px; border: 1px; color:aliceblue" />
+                    @if(@Model.Product.ProductImages != null){
+                        foreach(var images in Model.Product.ProductImages)
+                        {
+                            <div class="border p-1 m-2 text-center">
+                                <img src="@images.ImageUrl" width="100%"
+                                     style="border-radius:5px; border: 1px; color:aliceblue" />
+                                <a asp-controller="Product" asp-action="DeleteImage" asp-route-imageId="@images.Id" class="btn btn-danger form-control"><i class="bi bi-trash-fill"></i></a>
+                            </div>
+                        }
+                    }
+                    
                 </div>
             </div>
         </form>

@@ -26,7 +26,7 @@ namespace BooksOnDoor.DataAccess.Repository
             dbSet.Add(item);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string includeProperties = null, bool tracked=false)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked=false)
         {
             IQueryable<T> query;
             if (tracked)
@@ -42,7 +42,7 @@ namespace BooksOnDoor.DataAccess.Repository
             {
                 foreach (var includeprop in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(includeProperties);
+                    query = query.Include(includeprop);
                 }
             }
             return query.FirstOrDefault();

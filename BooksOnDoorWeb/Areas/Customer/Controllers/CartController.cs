@@ -32,9 +32,10 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
                 includeProperties: "Product"),
                 OrderHeader = new()
             };
-            
+            IEnumerable<ProductImage> prodImages = _unitOfWork.ProductImage.Getall();
             foreach(var cart in shoppingCartVM.ShoppingCartList)
             {
+                cart.Product.ProductImages = _unitOfWork.ProductImage.Getall(u => u.ProductId == cart.ProductId).ToList();
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 shoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
             }

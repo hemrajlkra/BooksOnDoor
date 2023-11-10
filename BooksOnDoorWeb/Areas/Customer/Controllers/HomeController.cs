@@ -25,7 +25,7 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> prodList = _unitOfWork.Product.Getall(includeProperties:"Category");
+            IEnumerable<Product> prodList = _unitOfWork.Product.Getall(includeProperties:"Category,ProductImages");
             
             return View(prodList);
         }
@@ -33,7 +33,7 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
         {
             ShoppingCart cart = new()
             {
-                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category,ProductImages"),
                 Count = 1,
                 ProductId = productId
             };

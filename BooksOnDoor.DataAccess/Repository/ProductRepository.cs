@@ -31,10 +31,7 @@ namespace BooksOnDoor.DataAccess.Repository
                 prodFromDb.Price = product.Price;
                 prodFromDb.Title = product.Title;
                 prodFromDb.Price100 = product.Price100;
-                if(prodFromDb.ImageUrl != null)
-                {
-                    prodFromDb.ImageUrl = product.ImageUrl;
-                }
+                prodFromDb.ProductImages = product.ProductImages;
 
 
 

@@ -35,12 +35,12 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
             RoleManagementVM roleManagementVM = new RoleManagementVM()
             {
                 ApplicationUser = _db.ApplicationUsers.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
-                RoleList = _db.Roles.Select(u => new SelectListItem()
+                RoleList = _db.Roles.Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Name
                 }),
-                CompanyList = _db.Companies.Select(u => new SelectListItem()
+                CompanyList = _db.Companies.Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
