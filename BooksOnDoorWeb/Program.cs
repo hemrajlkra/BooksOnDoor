@@ -45,6 +45,12 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+//Adding Goggle login
+builder.Services.AddAuthentication().AddGoogle(goggleOptions =>
+{
+	goggleOptions.ClientId=builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
+	goggleOptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
+});
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
