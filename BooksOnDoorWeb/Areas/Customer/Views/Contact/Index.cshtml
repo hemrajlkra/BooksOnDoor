@@ -1,0 +1,119 @@
+﻿@model BooksOnDoor.Models.Models.MailData
+
+@{
+    ViewData["Title"] = "Index";
+}
+@*
+<h1>Index</h1>
+
+<h4>MailData</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EmailToId" class="control-label"></label>
+                <input asp-for="EmailToId" class="form-control" />
+                <span asp-validation-for="EmailToId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailToName" class="control-label"></label>
+                <input asp-for="EmailToName" class="form-control" />
+                <span asp-validation-for="EmailToName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailSubject" class="control-label"></label>
+                <input asp-for="EmailSubject" class="form-control" />
+                <span asp-validation-for="EmailSubject" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailBody" class="control-label"></label>
+                <textarea asp-for="EmailBody" class="form-control" ></textarea>
+                <span asp-validation-for="EmailBody" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Send"  class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>*@
+
+<style>
+	body {
+    background: #eee;
+}
+</style>
+
+<div id="contact" class="contact-area section-padding">
+	<div class="container">
+		<div class="section-title text-center">
+			<h1>Get in Touch</h1>
+			<h4>We value your feedback! Let us know if you have any suggestions or how we can improve your shopping experience.</h4>
+		</div>
+		<div class="row">
+			<div class="col-lg-7">
+				<div class="contact">
+					<form class="form" asp-action="Index">
+						<div class="row">
+							<div class="form-group col-md-6">
+@*								<input type="text" name="name" class="form-control" placeholder="Name" required="required">
+*@								
+								<input asp-for="EmailToId" type="email" placeholder="Email" class="form-control" />
+								<span asp-validation-for="EmailToId" class="text-danger"></span>
+							</div>
+							<div class="form-group col-md-6">
+								@*<input type="email" name="email" class="form-control" placeholder="Email" required="required">*@
+								<input asp-for="EmailToName" placeholder="Name" class="form-control" />
+								<span asp-validation-for="EmailToName" class="text-danger"></span>
+							</div>
+							<div class="form-group col-md-12">
+								@*<input type="text" name="subject" class="form-control" placeholder="Subject" required="required">*@
+								<input asp-for="EmailSubject" placeholder="Subject" class="form-control" />
+								<span asp-validation-for="EmailSubject" class="text-danger"></span>
+							</div>
+							<div class="form-group col-md-12">
+								@*<textarea rows="6" name="message" class="form-control" placeholder="Your Message" required="required"></textarea>*@
+								<textarea asp-for="EmailBody" rows="6" placeholder="Message" class="form-control"></textarea>
+								<span asp-validation-for="EmailBody" class="text-danger"></span>
+							</div>
+							<div class="col-md-12 text-center">
+@*								<button type="submit" value="Send message" name="submit" id="submitButton" class="btn btn-contact-bg" title="Submit Your Message!">Send Message</button>
+*@								<input type="submit" class="btn btn-primary" style="border-radius:100px; width:40%;" />
+							</div>
+						</div>
+					</form>
+				</div>
+			</div><!--- END COL -->
+			<div class="col-lg-5">
+				<div class="single_address">
+					<i class="fa fa-map-marker"></i>
+					<h4>Our Address</h4>
+					<p>3481 Melrose Place, Beverly Hills</p>
+				</div>
+				<div class="single_address">
+					<i class="fa fa-envelope"></i>
+					<h4>Send your message</h4>
+					<p>Info@example.com</p>
+				</div>
+				<div class="single_address">
+					<i class="fa fa-phone"></i>
+					<h4>Call us on</h4>
+					<p>(+1) 517 397 7100</p>
+				</div>
+				<div class="single_address">
+					<i class="fa fa-clock-o"></i>
+					<h4>Work Time</h4>
+					<p>Mon - Fri: 08.00 - 16.00. <br>Sat: 10.00 - 14.00</p>
+				</div>
+			</div><!--- END COL -->
+		</div><!--- END ROW -->
+	</div><!--- END CONTAINER -->
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+}
