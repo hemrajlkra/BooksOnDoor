@@ -3,42 +3,6 @@
 @{
     ViewData["Title"] = "Index";
 }
-@*
-<h1>Index</h1>
-
-<h4>MailData</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EmailToId" class="control-label"></label>
-                <input asp-for="EmailToId" class="form-control" />
-                <span asp-validation-for="EmailToId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmailToName" class="control-label"></label>
-                <input asp-for="EmailToName" class="form-control" />
-                <span asp-validation-for="EmailToName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmailSubject" class="control-label"></label>
-                <input asp-for="EmailSubject" class="form-control" />
-                <span asp-validation-for="EmailSubject" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmailBody" class="control-label"></label>
-                <textarea asp-for="EmailBody" class="form-control" ></textarea>
-                <span asp-validation-for="EmailBody" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Send"  class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>*@
-
 <style>
 	body {
     background: #eee;
@@ -56,30 +20,24 @@
 				<div class="contact">
 					<form class="form" asp-action="Index">
 						<div class="row">
-							<div class="form-group col-md-6">
-@*								<input type="text" name="name" class="form-control" placeholder="Name" required="required">
-*@								
+							<div class="form-group col-md-6">							
 								<input asp-for="EmailToId" type="email" placeholder="Email" class="form-control" />
 								<span asp-validation-for="EmailToId" class="text-danger"></span>
 							</div>
 							<div class="form-group col-md-6">
-								@*<input type="email" name="email" class="form-control" placeholder="Email" required="required">*@
 								<input asp-for="EmailToName" placeholder="Name" class="form-control" />
 								<span asp-validation-for="EmailToName" class="text-danger"></span>
 							</div>
 							<div class="form-group col-md-12">
-								@*<input type="text" name="subject" class="form-control" placeholder="Subject" required="required">*@
 								<input asp-for="EmailSubject" placeholder="Subject" class="form-control" />
 								<span asp-validation-for="EmailSubject" class="text-danger"></span>
 							</div>
 							<div class="form-group col-md-12">
-								@*<textarea rows="6" name="message" class="form-control" placeholder="Your Message" required="required"></textarea>*@
 								<textarea asp-for="EmailBody" rows="6" placeholder="Message" class="form-control"></textarea>
 								<span asp-validation-for="EmailBody" class="text-danger"></span>
 							</div>
 							<div class="col-md-12 text-center">
-@*								<button type="submit" value="Send message" name="submit" id="submitButton" class="btn btn-contact-bg" title="Submit Your Message!">Send Message</button>
-*@								<input type="submit" class="btn btn-primary" style="border-radius:100px; width:40%;" />
+								<input type="submit" class="btn btn-primary" style="border-radius:100px; width:40%;" />
 							</div>
 						</div>
 					</form>
