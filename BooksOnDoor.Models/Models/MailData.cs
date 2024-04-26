@@ -21,6 +21,7 @@ namespace BooksOnDoor.Models.Models
         public string EmailSubject { get; set; }
         [Required]
         public string EmailBody { get; set; }
+        public string? ReCaptchaToken { get; set; }
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BooksOnDoor.DataAccess.Repository;
 using BooksOnDoor.DataAccess.Repository.IRepository;
 using BooksOnDoor.Models.Models;
+using BooksOnDoor.Utility.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,9 +11,12 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
 	public class ContactController : Controller
 	{
 		private readonly IMailService _mailService;
-		public ContactController(IMailService mailService)
+		private readonly IConfiguration _configuration;
+
+		public ContactController(IMailService mailService,IConfiguration configuration)
 		{
 			_mailService = mailService;
+			_configuration = configuration;
 		}
 		
 		public IActionResult Index()
@@ -23,11 +27,13 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
 		[HttpPost]
 		//[ActionName("SendMail")]
 		//public bool Index(MailData mailData) => _mailService.SendMail(mailData);
-		public IActionResult Index(MailData mailData)
+		public async Task<IActionResult> Index(MailData mailData)
 		{
-
-			if (_mailService.SendMail(mailData))
+			string secretKey = _configuration["ReCaptchaSetting:SecretKey"];
+			bool success = await ReCaptchaService.verifyReCaptchaV2(mailData.ReCaptchaToken, secretKey);
+			if (success==true)
 			{
+				_mailService.SendMail(mailData);
 				TempData["success"] = "Thankyou for reaching us we will get back to you!!";
 				return RedirectToAction(nameof(Index));
 			}

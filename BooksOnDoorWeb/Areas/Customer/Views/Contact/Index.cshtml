@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = "Index";
 }
+@inject IConfiguration configuration
+@{
+	var siteKey = configuration["ReCaptchaSetting:SiteKey"];
+}
+
 <style>
 	body {
     background: #eee;
@@ -18,7 +23,8 @@
 		<div class="row">
 			<div class="col-lg-7">
 				<div class="contact">
-					<form class="form" asp-action="Index">
+					<form class="form" asp-action="Index" onsubmit="onSubmit(event)">
+						<input type="hidden" id="reCaptchaTokenId" asp-for="ReCaptchaToken" />
 						<div class="row">
 							<div class="form-group col-md-6">							
 								<input asp-for="EmailToId" type="email" placeholder="Email" class="form-control" />
@@ -36,8 +42,11 @@
 								<textarea asp-for="EmailBody" rows="6" placeholder="Message" class="form-control"></textarea>
 								<span asp-validation-for="EmailBody" class="text-danger"></span>
 							</div>
-							<div class="col-md-12 text-center">
-								<input type="submit" class="btn btn-primary" style="border-radius:100px; width:40%;" />
+							<div class="form-group col-md-6">
+								<div id="recaptcha_checkbox"></div>
+							</div>
+							<div class="col-md-6 text-center">
+								<input type="submit" class="btn btn-primary" style="border-radius:15px; width:80%;" />
 							</div>
 						</div>
 					</form>
@@ -74,4 +83,16 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+	<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer> </script>
+	<script type="text/javascript">
+		var onloadCallback = function () {
+			grecaptcha.render('recaptcha_checkbox', {
+				'sitekey': '@siteKey'
+			});
+		};
+		function onSubmit(event){
+			var token = grecaptcha.getResponse();
+			document.getElementById("reCaptchaTokenId").value=token;
+		}
+	</script>
 }
