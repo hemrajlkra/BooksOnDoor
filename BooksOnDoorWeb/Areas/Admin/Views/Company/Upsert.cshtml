@@ -20,7 +20,7 @@
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12">
-                            <textarea asp-for="City" class="form-control border-0 shadow"></textarea>
+                            <input asp-for="City" class="form-control border-0 shadow" />
                             <label asp-for=City class="ms-2"></label>
                             <span asp-validation-for="City" class="text-danger"></span>
                         </div>
@@ -30,9 +30,10 @@
                             <span asp-validation-for="State" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="StreetAddress" class="form-control border-0 shadow" />
-                            <label asp-for="StreetAddress" class="ms-2"></label>
+                            <textarea asp-for="StreetAddress" class="form-control border-0 shadow"></textarea>
+                            <label asp-for="StreetAddress" class="ms-2 text-muted"></label>
                             <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                            
                         </div>
                         <div class="form-floating py-2 col-12">
                             <input asp-for="PhoneNumber" class="form-control border-0 shadow" />
