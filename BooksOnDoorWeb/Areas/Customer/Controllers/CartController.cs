@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using Stripe;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace BooksOnDoorWeb.Areas.Customer.Controllers
 {
@@ -18,9 +19,11 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
         [BindProperty]
         public ShopingCartVM shoppingCartVM { get; set; }
         private readonly IUnitOfWork _unitOfWork;
-        public CartController(IUnitOfWork unitOfWork)
+        private readonly IEmailSender _emailSender;
+        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -221,7 +224,7 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
                 }
                 HttpContext.Session.Clear();
             }
-            
+            _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "Wow!! New Order Placed - BooksOnDoor", $"Order Id-{orderHeader.Id}");
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.Getall(
                 u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
             _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
