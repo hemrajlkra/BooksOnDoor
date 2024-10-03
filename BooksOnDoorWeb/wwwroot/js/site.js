@@ -2,3 +2,9 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+ClassicEditor
+    .create(document.querySelector('textarea'))
+    .catch(error => {
+        console.error(error);
+    });

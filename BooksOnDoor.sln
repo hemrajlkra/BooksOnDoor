@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksOnDoorWeb", "BooksOnDo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DI_ServiceLifetime", "DI_ServiceLifetime\DI_ServiceLifetime.csproj", "{5FE8EB88-A6C8-44DD-939E-37C1A0373B90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksOnDoor.Models", "BooksOnDoor.Models\BooksOnDoor.Models.csproj", "{94CB368E-EF65-459C-A9B1-3267B3CE10CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksOnDoor.Utility", "BooksOnDoor.Utility\BooksOnDoor.Utility.csproj", "{E7F95B4D-53BF-49D8-AD0A-440F0D654F72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksOnDoor.DataAccess", "BooksOnDoor.DataAccess\BooksOnDoor.DataAccess.csproj", "{410025E1-DE71-42A1-955F-230BC28B677C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{5FE8EB88-A6C8-44DD-939E-37C1A0373B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE8EB88-A6C8-44DD-939E-37C1A0373B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE8EB88-A6C8-44DD-939E-37C1A0373B90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94CB368E-EF65-459C-A9B1-3267B3CE10CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94CB368E-EF65-459C-A9B1-3267B3CE10CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94CB368E-EF65-459C-A9B1-3267B3CE10CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94CB368E-EF65-459C-A9B1-3267B3CE10CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7F95B4D-53BF-49D8-AD0A-440F0D654F72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7F95B4D-53BF-49D8-AD0A-440F0D654F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7F95B4D-53BF-49D8-AD0A-440F0D654F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7F95B4D-53BF-49D8-AD0A-440F0D654F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{410025E1-DE71-42A1-955F-230BC28B677C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{410025E1-DE71-42A1-955F-230BC28B677C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{410025E1-DE71-42A1-955F-230BC28B677C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{410025E1-DE71-42A1-955F-230BC28B677C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
