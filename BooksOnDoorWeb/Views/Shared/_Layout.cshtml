@@ -72,6 +72,9 @@
                             </a>
                         </li>
                     </ul>
+                    <form class="d-flex me-3" asp-controller="Home" asp-action="Index" method="get">
+                        <input class="form-control me-2" style="width: 400px;" type="search" placeholder="Search..." name="query" aria-label="Search" value="@Context.Request.Query["query"]">
+                    </form>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -88,7 +91,7 @@
 
     <footer class="border-top footer text-muted text-center bg-primary">
         <div class="container">
-            &copy; 2023 - BooksOnDoorWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span> &copy; 2023 - BooksOnDoorWeb - </span><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
