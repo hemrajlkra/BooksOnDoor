@@ -73,23 +73,6 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             TempData["Success"] = "Item added successfully";
             return RedirectToAction(nameof(Index));
         }
-        //public IActionResult Search(string query)
-        //{
-        //    IEnumerable<Product> prodList = _unitOfWork.Product
-        //        .Getall(includeProperties: "Category,ProductImages");
-
-        //    if (!string.IsNullOrWhiteSpace(query))
-        //    {
-        //        // Case-insensitive search on the Title property
-        //        prodList = prodList.Where(p => p.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
-        //    }
-        //    if (!prodList.Any())
-        //    {
-        //        ViewBag.Message = "No products found matching your search.";
-        //    }
-        //    return RedirectToAction(nameof(Index, prodList));
-
-        //}
 
         public IActionResult Privacy()
         {
