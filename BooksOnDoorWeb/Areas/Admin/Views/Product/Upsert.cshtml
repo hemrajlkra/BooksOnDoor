@@ -10,7 +10,9 @@
     <div class="card-body p-4">
         <form method="post" enctype="multipart/form-data" class="row">
             <input asp-for="Product.Id" hidden />
-            @*<input asp-for="Product.ImageUrl" hidden/>*@
+            @*We need to add images as hidden else wouldn't update prod without images upload*@
+            <input asp-for="Product.ProductImages" hidden/> 
+            @Html.AntiForgeryToken()
             <div class="row">
                 <div class="col-10">
                     <div class="border p-3">
@@ -22,7 +24,7 @@
                         </div>
                         <div class="py-2 col-12">
                             <label asp-for=Product.Description class="ms-2 text-muted"></label>
-                            <textarea asp-for="Product.Description" class="form-control border-0 shadow" rows="12"></textarea>
+                            <textarea asp-for="Product.Description" class="form-control border-0 shadow large-textarea" rows="12"></textarea>
                         </div>
                         <div class="form-floating py-2 col-12">
                             <input asp-for="Product.ISBN" class="form-control border-0 shadow" />
@@ -92,15 +94,15 @@
                             </div>
                         }
                     }
-                    
+
                 </div>
             </div>
         </form>
     </div>
 </div>
 @section Scripts{
-    
+
     @{
-        <partial name="_ValidationScriptsPartial"></partial>
+        <partial name="_ValidationScriptsPartial"/>
     }
 }
