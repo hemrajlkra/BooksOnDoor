@@ -46,7 +46,8 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             {
                 Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category,ProductImages"),
                 Count = 1,
-                ProductId = productId
+                ProductId = productId,
+                Comments = _unitOfWork.UserComment.Getall(u => u.ProductId == productId).ToList()
             };
             return View(cart);
         }
@@ -72,6 +73,16 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             }
             TempData["Success"] = "Item added successfully";
             return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddComment(Comment comment)
+        {
+            comment.DatePosted= DateTime.Now;
+            _unitOfWork.UserComment.Add(comment);
+            _unitOfWork.save();
+
+            return RedirectToAction(nameof(Details), new {comment.ProductId});
         }
 
         public IActionResult Privacy()
