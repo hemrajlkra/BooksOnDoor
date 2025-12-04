@@ -55,19 +55,22 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductVM productVM,List<IFormFile> files)
-        {
+        { 
             if(ModelState.IsValid)
             {
+                string success;
                 if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(productVM.Product);
+                    success = "Product Created Successfully";
                 }
                 else
                 {
                     _unitOfWork.Product.update(productVM.Product);
+                    success = "Product Updated Successfully";
                 }
                 string webRootPath = _webHostEnvironment.WebRootPath;
-                if (files != null)
+                if (files != null) 
                 {
                     foreach(IFormFile file in files)
                     {
@@ -99,7 +102,7 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
                 }
 
                 _unitOfWork.save();
-                TempData["success"] = "Product Created Successfully";
+                TempData["success"] = success;
                 return RedirectToAction("Index");
             }
             else{

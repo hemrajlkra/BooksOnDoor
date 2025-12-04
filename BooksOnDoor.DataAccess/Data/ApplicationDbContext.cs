@@ -18,6 +18,7 @@ namespace BooksOnDoorWeb.Data
         public DbSet<OrderHeader> OrderHeader { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+		public DbSet<Comment> Comment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -26,6 +27,12 @@ namespace BooksOnDoorWeb.Data
 				new Category { Id = 1, Name = "Sci-fi", DisplayOrder = 1, },
 				new Category { Id = 2, Name = "Bollywood", DisplayOrder = 2 }
 				);
-		}
+            modelBuilder.Entity<Comment>()
+				.HasOne(c => c.Product)
+				.WithMany(p => p.Comments)
+				.HasForeignKey(c => c.ProductId)
+				.OnDelete(DeleteBehavior.Cascade);
+            
+        }
 	}
 }

@@ -46,7 +46,8 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             {
                 Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category,ProductImages"),
                 Count = 1,
-                ProductId = productId
+                ProductId = productId,
+                Comments = _unitOfWork.UserComment.Getall(u => u.ProductId == productId).ToList()
             };
             return View(cart);
         }
@@ -73,23 +74,16 @@ namespace BooksOnDoorWeb.Areas.Customer.Controllers
             TempData["Success"] = "Item added successfully";
             return RedirectToAction(nameof(Index));
         }
-        //public IActionResult Search(string query)
-        //{
-        //    IEnumerable<Product> prodList = _unitOfWork.Product
-        //        .Getall(includeProperties: "Category,ProductImages");
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddComment(Comment comment)
+        {
+            comment.DatePosted= DateTime.Now;
+            _unitOfWork.UserComment.Add(comment);
+            _unitOfWork.save();
 
-        //    if (!string.IsNullOrWhiteSpace(query))
-        //    {
-        //        // Case-insensitive search on the Title property
-        //        prodList = prodList.Where(p => p.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
-        //    }
-        //    if (!prodList.Any())
-        //    {
-        //        ViewBag.Message = "No products found matching your search.";
-        //    }
-        //    return RedirectToAction(nameof(Index, prodList));
-
-        //}
+            return RedirectToAction(nameof(Details), new {comment.ProductId});
+        }
 
         public IActionResult Privacy()
         {
