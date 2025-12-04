@@ -9,6 +9,7 @@ using Stripe;
 using Microsoft.Extensions.Configuration;
 using BooksOnDoor.DataAccess.DbInitializer;
 using BooksOnDoor.Models.Models;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,8 @@ builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IMailService, MailService>();
+//adding azure blob storage for images
+builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorage")));
 //Adding Goggle login
 builder.Services.AddAuthentication().AddGoogle(goggleOptions =>
 {

@@ -43,6 +43,7 @@ namespace BooksOnDoor.Models.Models
         public Category Category { get; set; }
         [ValidateNever]
         public List<ProductImage> ProductImages { get; set; }
+        [ValidateNever]
         public ICollection<Comment> Comments { get; set; }
 
     }
