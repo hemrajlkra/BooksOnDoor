@@ -1,4 +1,6 @@
-﻿using BooksOnDoor.DataAccess.Repository.IRepository;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using BooksOnDoor.DataAccess.Repository.IRepository;
 using BooksOnDoor.Models.Models;
 using BooksOnDoor.Models.ViewModel;
 using BooksOnDoor.Utility;
@@ -19,10 +21,17 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProductController(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
+        private readonly BlobContainerClient _blobContainerClient;
+        public ProductController(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment, IConfiguration config)
         {
             _unitOfWork= unitOfWork;
             _webHostEnvironment= webHostEnvironment;
+            var connectionString = config["AzureStorage:ConnectionString"];
+            var containerName = config["AzureStorage:ContainerName"];
+            var blobServiceClient = new BlobServiceClient(connectionString);
+            _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            _blobContainerClient.CreateIfNotExists();
+            _blobContainerClient.SetAccessPolicy(PublicAccessType.Blob);
         }
         public IActionResult Index()
         {
@@ -54,7 +63,7 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(ProductVM productVM,List<IFormFile> files)
+        public async Task<IActionResult> Upsert(ProductVM productVM,List<IFormFile> files)
         { 
             if(ModelState.IsValid)
             {
@@ -74,27 +83,50 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
                 {
                     foreach(IFormFile file in files)
                     {
+                        /* This is local directory storage implementation */
+
+                        //string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        //string productPath = @"images\products\product-" + productVM.Product.Id;
+                        //string finalPath = Path.Combine(webRootPath, productPath);
+                        //if(!Directory.Exists(finalPath))
+                        //    Directory.CreateDirectory(finalPath);
+                        ////creating a file stream to upload an image
+                        //using (var filestream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
+                        //{
+                        //    file.CopyTo(filestream);
+                        //}
+                        ////saving the record to the productimage table.
+                        //ProductImage prodImage = new ProductImage() { 
+                        //    ImageUrl=@"\"+productPath+@"\"+fileName,
+                        //    ProductId=productVM.Product.Id
+                        //};
+                        //if(productVM.Product.ProductImages==null)
+                        //{
+                        //    productVM.Product.ProductImages = new List<ProductImage>(); 
+                        //}
+                        //productVM.Product.ProductImages.Add(prodImage);
+
+                        /* Below is Azure blob implementation */
+
                         string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        string productPath = @"images\products\product-" + productVM.Product.Id;
-                        string finalPath = Path.Combine(webRootPath, productPath);
-                        if(!Directory.Exists(finalPath))
-                            Directory.CreateDirectory(finalPath);
-                        //creating a file stream to upload an image
-                        using (var filestream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
+                        string blobPath = $"product-{productVM.Product.Id}/{fileName}";
+                        var blobClient = _blobContainerClient.GetBlobClient(fileName);
+                        using (var stream = file.OpenReadStream())
                         {
-                            file.CopyTo(filestream);
+                            await blobClient.UploadAsync(stream,true);
                         }
-                        //saving the record to the productimage table.
-                        ProductImage prodImage = new ProductImage() { 
-                            ImageUrl=@"\"+productPath+@"\"+fileName,
-                            ProductId=productVM.Product.Id
-                        };
-                        if(productVM.Product.ProductImages==null)
+                        string blobURI = blobClient.Uri.ToString();
+                        ProductImage prodImage = new ProductImage()
                         {
-                            productVM.Product.ProductImages = new List<ProductImage>(); 
+                            ImageUrl= blobURI,
+                            ProductId = productVM.Product.Id,
+                        };
+                        if (productVM.Product.ProductImages == null)
+                        {
+                            productVM.Product.ProductImages = new List<ProductImage>();
                         }
                         productVM.Product.ProductImages.Add(prodImage);
-                        
+
                     }
                     _unitOfWork.Product.update(productVM.Product);
                     _unitOfWork.save();
@@ -119,11 +151,20 @@ namespace BooksOnDoorWeb.Areas.Admin.Controllers
             {
                 if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
                 {
-                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageToBeDeleted.ImageUrl.TrimStart('\\'));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
+
+                    /* This implementation is of delete from local path file storage */
+                    //var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageToBeDeleted.ImageUrl.TrimStart('\\'));
+                    //if (System.IO.File.Exists(oldImagePath))
+                    //{
+                    //    System.IO.File.Delete(oldImagePath);
+                    //}
+
+                    /* This implementation is to delete from azure blob storage */
+                    var oldImagePath = imageToBeDeleted.ImageUrl;
+                    var blobName = Path.GetFileName(oldImagePath);
+                    var blobClient = _blobContainerClient.GetBlobClient(blobName);
+                    if (!string.IsNullOrEmpty(oldImagePath))
+                        blobClient.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
                 }
                 _unitOfWork.ProductImage.Remove(imageToBeDeleted);
                 _unitOfWork.save();
