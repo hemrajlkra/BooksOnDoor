@@ -7,6 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BooksOnDoor.DataAccess.Repository.IRepository;
+using BooksOnDoor.Models.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -20,11 +22,13 @@ namespace BooksOnDoorWeb.Areas.Identity.Pages.Account
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IMailService _mailService;
 
-        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender, IMailService mailService)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _mailService = mailService;
         }
 
         /// <summary>
@@ -69,11 +73,18 @@ namespace BooksOnDoorWeb.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
-
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                MailData mailData = new MailData()
+                {
+                    EmailSubject= "BooksOnDoor : Password reset requested",
+                    EmailToId=Input.Email,
+                    EmailBody = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> clicking here</a>.",
+                    OrgEmailId = Input.Email
+                };
+                _mailService.SendMail(mailData);
+                //await _emailSender.SendEmailAsync(
+                //    Input.Email,
+                //    "Reset Password",
+                //    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

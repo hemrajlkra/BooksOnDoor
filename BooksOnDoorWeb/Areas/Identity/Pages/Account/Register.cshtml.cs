@@ -202,6 +202,7 @@ namespace BooksOnDoorWeb.Areas.Identity.Pages.Account
                         }
                         else
                         {
+                            TempData["Success"] = "Please confirm your email address in inbox";
                             await _signInManager.SignInAsync(user, isPersistent: false);
                         }
                         return LocalRedirect(returnUrl);
